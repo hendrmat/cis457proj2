@@ -18,18 +18,6 @@ print("Success!")
 
 root = Tk()
 
-#replace_regex = re.compile(r"[\U00010000-\U0010FFFF]")
-
-#def match_surrogate(match):
-#    c = match.group()
-#    encoded = c.encode("utf-16-le")
- #   return chr(int.from_bytes(encoded[:2], "little")) + \
- #          chr(int.from_bytes(encoded[2:], "little"))
-
-#def replace_emoji(string):
- #   return replace_regex.sub(match_surrogate, string)
-
-
 # This function will copy the text from the text box to the chat log
 # and then delete the text from the text box afterwards
 def send_text(event=None):
@@ -38,11 +26,20 @@ def send_text(event=None):
     # with empty messages
     if len(text_window.get("1.0", "end-1c")) != 0:
         chat_window.config(state=NORMAL)
-        message = text_window.get("1.0", "end")
+        message = "You: " + text_window.get("1.0", "end")
         text_window.delete("1.0", "end-1c")
         chat_window.insert("end", message)
+    #server.send(bytes(message, "utf8"))
     chat_window.see(tkinter.END)
     chat_window.config(state=DISABLED)
+
+
+# This function will allow the client to receive messages from the
+# server side of the chat application
+def receive_text():
+    while True:
+        message = "Friend: " + server.recv(4096).decode()
+    
 
 
 # This function will prevent the annoying effect of the cursor dropping
@@ -103,9 +100,6 @@ def print_anime_angry(Event):
 
 def print_anime_shock(Event):
     text_window.insert(tkinter.END, "O_O ")
-
-#def printTestSmiley(Event):
-#    textWindow.insert(tkinter.END, replace_emoji("\U0001F600"))
 
 # Creating the chat history window
 chat_window = Text(root, height="10", width="70", borderwidth=2,
